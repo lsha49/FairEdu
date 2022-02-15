@@ -1,4 +1,4 @@
-# CoFET
+# Fair Educational Modelling
 
 ## Requirements  
 * Python 3.8  
