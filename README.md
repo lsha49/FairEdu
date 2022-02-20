@@ -1,4 +1,9 @@
 # Fair Educational Modelling
+An python repository to perform education dataset balancing. Download with `git clone` or equivalent.
+
+```bash
+git clone @repo
+```
 
 ## Requirements  
 * Python 3.8  
@@ -7,18 +12,6 @@
 * tensorflow-macos 2.7.0
 * tensorflow-metal 0.3.0
 * Sklearn > 0.19.0  
-
-## Purpose of FairEdu 
-* An python repository to perform education dataset balancing. 
-
-
-## Installation
-
-Download with `git clone` or equivalent.
-
-```bash
-git clone @repo
-```
 
 
 ## Datasets & Model implementation
