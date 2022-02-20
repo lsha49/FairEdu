@@ -1,4 +1,4 @@
-# Fair Educational Modelling
+# Towards Fairer Education For All
 An python repository to perform education dataset balancing. Download with `git clone` or equivalent.
 
 ```bash
