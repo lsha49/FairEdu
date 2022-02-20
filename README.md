@@ -1,4 +1,4 @@
-# Towards fairer education by dataset balancing
+# FairEdu: Balancing Biased Data for Fair Modeling in Education
 An python repository to perform educational dataset balancing applied in submitted paper in @todo. 
 
 Download this repository with `git clone` or equivalent.
