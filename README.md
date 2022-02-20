@@ -16,7 +16,7 @@ git clone @repo
 * Sklearn > 0.19.0  
 
 
-## Datasets & Model implementation
+## Datasets & Model implementation detail
 We describe below the detailed dataset and model implementation.
 
 ### Forum Post

@@ -19,16 +19,25 @@ from scipy.spatial import distance
 from statistics import stdev, mean
 
 class test_cbt(object):
-    def preprocessing(self): 
-        # @todo import your data file
-        filename = ''; 
-        # useLabel = ''; 
-        # Corpus = pd.read_csv(filename, encoding='') 
+    def preprocessing(self, filename = "dataFile", useLabel = "Label"): 
+        """import and split dataset for data balancing experiment.
+        Parameters
+        ----------
+        filename: string, optional (default='dataFile')
+            applied to import your data file
+        useLabel: string, optional (default='Label')
+            label column name in the csv file 
+            e.g. is_content_related
+        Returns
+        -------
+        """
+        # @todo import data
+        Corpus = pd.read_csv(filename, encoding='') 
 
-        # @todo add your test size and random counter                                                                 
-        # self.Train_X, self.Test_X, self.Train_Y, self.Test_Y = model_selection.train_test_split(Corpus.to_numpy(), Corpus[useLabel], test_size=, random_state=)        
+        # @todo train test split
+        # Train_X, Test_X, Train_Y, Test_Y = model_selection.train_test_split(Corpus.to_numpy(), Corpus[useLabel], test_size=, random_state=)        
 
-        # @todo generate samples by Class Balancing Techniques (CBTs)
+        # @todo generate samples by Data Balancing Techniques
         # self.cbt()
         
         # @todo calculate KDN and hardness bias (hard-bias)
@@ -36,6 +45,25 @@ class test_cbt(object):
                 
 
     def cbt(self, X, Y, G):            
+        """perform data balancing experiment.
+        Parameters
+        ----------
+        X: array-like,
+            Feature matrix with [n_samples, n_features].
+        Y: array-like,
+            Labels of given data [n_samples]
+        G: array-like,
+            Protected attributes of given data [n_samples]
+        
+        Returns
+        -------
+        X: array-like,
+            Re-sampled feature matrix with [n_samples, n_features].
+        Y: array-like,
+            Re-sampled labels of given data [n_samples]
+        G: array-like,
+            Re-sampled protected attributes of given data [n_samples]
+        """
         balanceMode = ''
             
         if balanceMode == 'C': # class oversample
@@ -54,31 +82,76 @@ class test_cbt(object):
             X, GY = NearMiss().fit_resample(X, GY)  
             G = self.GY.str[0].astype(int); Y = self.GY.str[1].astype(int)
 
+        return X, Y, G
 
 
     def calKDN(self, features, labels,  List00Index, List01Index, List10Index, List11Index): 
+        """calculate Hardness-bias by KDN distribution.
+        Parameters
+        ----------
+        features: array-like,
+            Feature matrix with [n_samples, n_features].
+        labels: array-like,
+            Labels of given data [n_samples]
+        List00Index: array-like,
+            indices of (protected attribute=0, label=0) in the feature and label set
+        List01Index: array-like,
+            indices of (protected attribute=0, label=1) in the feature and label set
+        List10Index: array-like,
+            indices of (protected attribute=1, label=0) in the feature and label set
+        List11Index: array-like,
+            indices of (protected attribute=1, label=1) in the feature and label set
+        Returns
+        -------
+        avg_kl_pq_01: float,
+            Hardness bias score.
+        """
         kdnResult = kdn_score(features, labels, 5)
         kl_pq0 = distance.jensenshannon(kdnResult[0][List00Index], kdnResult[0][List01Index])
         kl_pq1 = distance.jensenshannon(kdnResult[0][List10Index], kdnResult[0][List11Index])
         return (kl_pq0 + kl_pq1)/2
 
-
-    # ABROCA related calculations
-    def getDfToComputeAbroca(self, predicted, predictionProb):
+    def getDfToComputeAbroca(self, predicted, predictionProb, Test_Y, Test_G):
+        """prepare dataframe for ABROCA related calculations.
+        Parameters
+        ----------
+        predicted: array-like,
+            model predictions of given test data [n_samples]
+        predictionProb: array-like,
+            model prediction probability of given test data [n_samples, n_labels] or [n_samples]
+        Test_Y: array-like,
+            test set label of given test data [n_samples]
+        Test_G: array-like,
+            test set protected attribute of given test data [n_samples]
+        Returns
+        -------
+        predictionDataframe: array-like,
+            ABROCA dataframe containing prediction label and demographic info.
+        """
         predictionDataframe = pd.DataFrame(predicted, columns = ['predicted'])
         predictionDataframe['prob_1'] = pd.DataFrame(predictionProb)[1]
-        predictionDataframe['label'] = self.Test_Y.tolist()
-        predictionDataframe['gender'] = self.Test_G.astype(str)
+        predictionDataframe['label'] = Test_Y.tolist()
+        predictionDataframe['gender'] = Test_G.astype(str)
         return predictionDataframe
 
-    # ABROCA calculation
     def computeAbroca(self, abrocaDf):
+        """perform ABROCA calculation.
+        Parameters
+        ----------
+        abrocaDf: array-like,
+            prediction dataframe built by getDfToComputeAbroca().
+        Returns
+        -------
+        slice: array-like,
+            contains abroca calculation result 
+            see spec and parameter values of compute_abroca in https://pypi.org/project/abroca/
+        """
         slice = compute_abroca(abrocaDf, 
-                            pred_col = 'prob_1' , 
-                            label_col = 'label', 
-                            protected_attr_col = 'gender',
-                            majority_protected_attr_val = '2',
-                            compare_type = 'binary', # binary, overall, etc...
+                            pred_col = '' , 
+                            label_col = '', 
+                            protected_attr_col = '',
+                            majority_protected_attr_val = '',
+                            compare_type = '',
                             n_grid = 10000,
                             plot_slices = False)
-        print(slice)
+        return slice
