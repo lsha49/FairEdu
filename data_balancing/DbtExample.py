@@ -18,7 +18,7 @@ from abroca import *
 from scipy.spatial import distance
 from statistics import stdev, mean
 
-class test_cbt(object):
+class DbtExample(object):
     def preprocessing(self, filename = "dataFile", useLabel = "Label"): 
         """import and split dataset for data balancing experiment.
         Parameters
