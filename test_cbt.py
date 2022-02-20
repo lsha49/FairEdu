@@ -22,8 +22,8 @@ class test_cbt(object):
     def preprocessing(self): 
         # @todo import your data file
         filename = ''; 
-        useLabel = ''; 
-        Corpus = pd.read_csv(filename, encoding='') 
+        # useLabel = ''; 
+        # Corpus = pd.read_csv(filename, encoding='') 
 
         # @todo add your test size and random counter                                                                 
         # self.Train_X, self.Test_X, self.Train_Y, self.Test_Y = model_selection.train_test_split(Corpus.to_numpy(), Corpus[useLabel], test_size=, random_state=)        
